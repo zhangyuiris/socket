@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+		<title>计算机网络的socket</title>
+		<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.js"></script>
+		<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+		<style>
+			html,body {
+				margin: 0;
+				padding: 0; 
+				box-sizing: border-box;
+			}
+			.bottom {
+				background-color: #FEE140;
+				background-image: linear-gradient(315deg, #FEE140 0%, #FA709A 100%); 
+				position: fixed; 
+				bottom: 0; 
+				width: 100%;
+				padding: 20px; 
+				padding-right: 0;
+				height: auto;
+			}
+			form input { 
+				border: 0; 
+				padding: 10px; 
+				margin-right: 10px;
+				width: 85%; 
+			}
+      form button { 
+				width: 9%; 
+			}
+			#messages {
+				padding: 20px 20px 20px 0;
+				margin-bottom: 80px;
+			}
+			.name {
+				background-color: #FA709A;
+				color: white;
+				padding:4px;
+				font-size: 16px;
+				margin-bottom: 4px;
+			}
+			#name {
+				border: 1px solid #999;
+				margin: 10px 0 0 0;
+				background-color: white;
+			}
+			.fade {
+				margin: 0;
+				padding: 0;
+				bottom: 0; 
+				width: 100%;
+				height: 100%;
+				background-color: black; 
+				z-index: 999;
+			}
+    </style>
+  </head>
+  <body>
+		<div class="container-fluid" style="margin: 0;padding:0;">
+			<div class="row" style="margin: 0;padding: 0;">
+					<span>你的昵称是：</span>
+					<input value="" id="name"/>
+				<div class="col-sm-12 col-md-12 col-lg-12 top">
+					<div id="messages"></div>
+				</div>
+				<div class="col-sm-12 col-md-12 col-lg-12 bottom">
+					<form action="">
+						<input id="m" autocomplete="off" />
+						<button id="sendChatContent" type="submit" class="btn btn-default" style="background-color:black;color:white;border:none;padding:10px">发送</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+		$(function () {
+			var socket = io();
+			$('form').submit(function(){
+				var name = document.getElementById('name').value;
+				var msg = $('#m').val();
+				socket.emit('chat message', {
+					username: name,
+					message: msg
+				});
+				$('#m').val('');
+				return false;
+			});
+			socket.on('chat message', function(msg){
+				console.log(msg+ "111");
+				$('#messages').append('<p><span class="name">' + msg.username + '</span>：<span>' + msg.message + '</span></li>');
+			});
+		});
+	</script>
+</html>
